@@ -12,29 +12,7 @@ A modern React-based dashboard for exploring Conflux Testnet accounts, transacti
 
 ---
 
-## Setup Instructions
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd <your-repo-folder>
-   ```
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-3. **Start the development server**
-   ```bash
-   npm start
-   # or
-   yarn start
-   ```
-4. **Open in your browser**
-   - Go to [http://localhost:3000](http://localhost:3000)
-
----
 
 ## API Endpoints Used
 
