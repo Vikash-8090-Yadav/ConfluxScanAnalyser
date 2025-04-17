@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NormalTransaction from './NormalTransaction';
 import InternalTransaction from './InternalTransaction';
 import TokenTransfers from './TokenTransfers';
@@ -23,6 +23,26 @@ export default function AccountDashboard({ address, onLogout }) {
   const [activeTab, setActiveTab] = useState('normal');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [accountData, setAccountData] = useState({ balance: null });
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await fetch(
+          `https://evmapi-testnet.confluxscan.net/api?module=account&action=balance&address=${address}`
+        );
+        const data = await response.json();
+        setAccountData({ balance: data.result || '0' });
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+        setAccountData({ balance: '0' });
+      }
+    };
+
+    if (address) {
+      fetchBalance();
+    }
+  }, [address]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
@@ -38,16 +58,17 @@ export default function AccountDashboard({ address, onLogout }) {
         <div className="mt-4 text-lg font-bold">{truncateAddress(address)}</div>
         <button
           onClick={handleCopy}
-          className="mt-2 flex items-center px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm hover:bg-opacity-30 transition"
+          className="mt-2 flex items-center px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm hover:bg-opacity-30 transition text-gray-800 font-medium"
         >
-          <Copy className="h-4 w-4 mr-1" />
+          <Copy className="h-4 w-4 mr-1 text-gray-800" />
           {copied ? 'Copied!' : 'Copy Address'}
         </button>
       </div>
       <div className="bg-white bg-opacity-80 rounded-2xl p-4 mb-6 text-purple-700 text-center">
         <div className="text-xs font-semibold mb-1">Balance</div>
-        {/* You can fetch and show live balance here if needed */}
-        <div className="text-2xl font-bold">CFX</div>
+        <div className="text-2xl font-bold text-gray-800">
+          {accountData?.balance ? `${(Number(accountData.balance) / 1e18).toFixed(4)} CFX` : '0 CFX'}
+        </div>
       </div>
       <button
         onClick={() => window.open('https://efaucet.confluxnetwork.org/', '_blank')}

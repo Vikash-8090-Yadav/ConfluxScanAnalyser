@@ -19,6 +19,8 @@ export default function AccountDetails({ address }) {
           `https://evmapi-testnet.confluxscan.net/api?module=account&action=balance&address=${address}`
         )
         const balanceData = await balanceResponse.json()
+        console.log('Balance API Response:', balanceData) // Debug log
+        console.log('Balance value:', balanceData.result) // Debug log
 
         // Fetch transactions
         const txResponse = await fetch(
@@ -39,7 +41,7 @@ export default function AccountDetails({ address }) {
         const tokenTxData = await tokenTxResponse.json()
 
         setAccountData({
-          balance: balanceData.result,
+          balance: balanceData.result || '0',
           transactions: txData.result || [],
           internalTransactions: internalTxData.result || [],
           tokenTransfers: tokenTxData.result || []
@@ -76,11 +78,15 @@ export default function AccountDetails({ address }) {
   return (
     <div className="space-y-6">
       {/* Balance Card */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-black rounded-lg shadow-md p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Account Balance</h3>
-        <p className="text-2xl font-bold text-purple-600">
-          {accountData.balance ? `${(accountData.balance / 1e18).toFixed(4)} CFX` : '0 CFX'}
-        </p>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-gray-800">
+            {accountData.balance && accountData.balance !== '0' 
+              ? `${(parseInt(accountData.balance) / 1e18).toFixed(4)} CFX` 
+              : '0 CFX'}
+          </p>
+        </div>
       </div>
 
       {/* Recent Transactions */}
@@ -89,10 +95,10 @@ export default function AccountDetails({ address }) {
         <div className="space-y-4">
           {accountData.transactions.slice(0, 5).map((tx, index) => (
             <div key={index} className="border-b pb-2">
-              <p className="text-sm text-gray-600">Hash: {tx.hash}</p>
-              <p className="text-sm text-gray-600">From: {tx.from}</p>
-              <p className="text-sm text-gray-600">To: {tx.to}</p>
-              <p className="text-sm text-gray-600">Value: {(tx.value / 1e18).toFixed(4)} CFX</p>
+              <p className="text-sm text-gray-800">Hash: {tx.hash}</p>
+              <p className="text-sm text-gray-800">From: {tx.from}</p>
+              <p className="text-sm text-gray-800">To: {tx.to}</p>
+              <p className="text-sm text-gray-800">Value: {(tx.value / 1e18).toFixed(4)} CFX</p>
             </div>
           ))}
         </div>
@@ -104,10 +110,10 @@ export default function AccountDetails({ address }) {
         <div className="space-y-4">
           {accountData.internalTransactions.slice(0, 5).map((tx, index) => (
             <div key={index} className="border-b pb-2">
-              <p className="text-sm text-gray-600">Hash: {tx.hash}</p>
-              <p className="text-sm text-gray-600">From: {tx.from}</p>
-              <p className="text-sm text-gray-600">To: {tx.to}</p>
-              <p className="text-sm text-gray-600">Value: {(tx.value / 1e18).toFixed(4)} CFX</p>
+              <p className="text-sm text-gray-800">Hash: {tx.hash}</p>
+              <p className="text-sm text-gray-800">From: {tx.from}</p>
+              <p className="text-sm text-gray-800">To: {tx.to}</p>
+              <p className="text-sm text-gray-800">Value: {(tx.value / 1e18).toFixed(4)} CFX</p>
             </div>
           ))}
         </div>
@@ -119,11 +125,11 @@ export default function AccountDetails({ address }) {
         <div className="space-y-4">
           {accountData.tokenTransfers.slice(0, 5).map((tx, index) => (
             <div key={index} className="border-b pb-2">
-              <p className="text-sm text-gray-600">Hash: {tx.hash}</p>
-              <p className="text-sm text-gray-600">Token: {tx.tokenSymbol}</p>
-              <p className="text-sm text-gray-600">From: {tx.from}</p>
-              <p className="text-sm text-gray-600">To: {tx.to}</p>
-              <p className="text-sm text-gray-600">Value: {tx.value}</p>
+              <p className="text-sm text-gray-800">Hash: {tx.hash}</p>
+              <p className="text-sm text-gray-800">Token: {tx.tokenSymbol}</p>
+              <p className="text-sm text-gray-800">From: {tx.from}</p>
+              <p className="text-sm text-gray-800">To: {tx.to}</p>
+              <p className="text-sm text-gray-800">Value: {tx.value}</p>
             </div>
           ))}
         </div>
